@@ -10,6 +10,11 @@ interface ProductCardProps {
    // declara exactamente qué campos necesita y TypeScript avisa si una
    // query se olvida de pedir alguno
    product: ProductCardFieldsFragment
+   // El diseño muestra la valoración en el catálogo pero no en la home
+   showRating?: boolean
+   // Ancho de la tarjeta en pantalla (para que la foto se descargue justa).
+   // Por defecto: 4 columnas (home); el catálogo usa 3
+   imageSizes?: string
 }
 
 // Etiqueta sobre la foto. El descuento tiene prioridad sobre "Nuevo":
@@ -24,7 +29,11 @@ const getProductTag = (product: ProductCardFieldsFragment) => {
 
 // Tarjeta de producto. Vive en `shared` porque se reutiliza en la home,
 // el catálogo, favoritos y "También te puede gustar" del detalle
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+   product,
+   showRating = false,
+   imageSizes = '(min-width: 1280px) 300px, (min-width: 768px) 25vw, 50vw',
+}: ProductCardProps) {
    const href = productRoute(product.slug)
    const tag = getProductTag(product)
 
@@ -49,10 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   // Las fotos de producto tienen proporciones distintas (de 0.56
                   // a 0.80): se recortan a 3:4 respetando la prenda
                   autoCrop="3:4"
-                  // La tarjeta ocupa media pantalla en móvil (2 columnas) y un
-                  // cuarto en escritorio (4 columnas), hasta el ancho máximo de
-                  // 1280 px del Container: así el navegador pide la foto justa
-                  sizes="(min-width: 1280px) 300px, (min-width: 768px) 25vw, 50vw"
+                  sizes={imageSizes}
                />
             </Link>
 
@@ -104,6 +110,15 @@ export function ProductCard({ product }: ProductCardProps) {
                product.compareAtPrice !== null && (
                <span className="text-xs text-brown-1 line-through">
                   {formatPrice(product.compareAtPrice)}
+               </span>
+            )}
+            {showRating && (
+               // ml-auto: empuja la valoración al extremo derecho
+               <span
+                  className="ml-auto text-[11px] text-coral-principal"
+                  aria-label={`Valoración: ${product.rating} de 5`}
+               >
+                  ★ {product.rating.toLocaleString('es-ES')}
                </span>
             )}
          </div>

@@ -13,6 +13,7 @@ export const PRODUCT_CARD_FIELDS = gql`
       compareAtPrice
       discountPercentage
       isNew
+      rating
       mainImage {
          publicId
          alt
