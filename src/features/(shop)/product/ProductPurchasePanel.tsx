@@ -3,21 +3,27 @@
 
 import { SpriteIcon } from '@/components/shared/SpriteIcon'
 import type { ProductDetailQuery } from '@/graphql/generated/graphql'
+import { useCart } from '@/hooks/use-cart'
+import { getErrorMessage } from '@/lib/graphql-error'
+import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
+import { MAX_QUANTITY_PER_LINE, useCartStore } from '@/stores/cart-store'
+import { useRouter } from 'next/navigation'
 import { useId, useState } from 'react'
 import { SizeGuideDialog, type SizeGuideKind } from './SizeGuideDialog'
 
 type ProductSizes = NonNullable<ProductDetailQuery['product']>['sizes']
 
 interface ProductPurchasePanelProps {
+   productId: string
    sizes: ProductSizes
    inStock: boolean
 }
 
-// Límite de unidades por pedido. La API no expone el stock exacto (dato de
-// negocio), así que se pone un tope razonable; el backend validará el stock
-// real cuando exista el carrito
-const MAX_QUANTITY = 10
+// Límite de unidades por línea: el mismo que el carrito. La API no expone
+// el stock exacto (dato de negocio); si se piden más de las que hay, el
+// backend las acota y el carrito muestra la cantidad real
+const MAX_QUANTITY = MAX_QUANTITY_PER_LINE
 // Talla de los productos que no tienen tallas (bolsos, bufandas)
 const ONE_SIZE = 'ÚNICA'
 
@@ -29,9 +35,14 @@ function getSizeGuideKind(sizes: ProductSizes): SizeGuideKind | null {
 }
 
 export function ProductPurchasePanel({
+   productId,
    sizes,
    inStock,
 }: ProductPurchasePanelProps) {
+   const router = useRouter()
+   const { addItem } = useCart()
+   const setDrawerOpen = useCartStore((state) => state.setDrawerOpen)
+   const [isAdding, setIsAdding] = useState(false)
    const isOneSize = sizes.length === 1 && sizes[0].size === ONE_SIZE
    // Talla única: ya viene elegida (no tiene sentido obligar a pulsarla)
    const [selectedSize, setSelectedSize] = useState<string | null>(
@@ -46,18 +57,31 @@ export function ProductPurchasePanel({
    const sizeGuideKind = getSizeGuideKind(sizes)
    const sizeLabelId = useId()
 
-   const handleAdd = () => {
+   // "Añadir al carrito" y "Comprar ahora" comparten TODO excepto lo que
+   // pasa al final: uno abre el drawer (seguir comprando), el otro lleva
+   // directo a la página del carrito
+   const addToCart = async ({ goToCart }: { goToCart: boolean }) => {
       // Validar ANTES de actuar: sin talla no hay nada que añadir
       if (!selectedSize) {
          setMessage({ tone: 'error', text: 'Elige una talla para continuar.' })
          return
       }
-      // TODO(carrito): aquí se añadirá { producto, talla, cantidad } al
-      // carrito cuando exista. De momento solo se confirma la selección
-      setMessage({
-         tone: 'info',
-         text: `Talla ${selectedSize} × ${quantity} lista. El carrito llega en el siguiente paso.`,
-      })
+      setMessage(null)
+      setIsAdding(true)
+      try {
+         await addItem({ productId, size: selectedSize, quantity })
+         if (goToCart) {
+            // addItem abre el drawer; al ir al carrito no tiene sentido
+            setDrawerOpen(false)
+            router.push(ROUTES.cart)
+         }
+      } catch (error) {
+         // P. ej. "Esa talla está agotada" si alguien compró la última
+         // unidad mientras el usuario miraba la ficha
+         setMessage({ tone: 'error', text: getErrorMessage(error) })
+      } finally {
+         setIsAdding(false)
+      }
    }
 
    if (!inStock) {
@@ -158,17 +182,20 @@ export function ProductPurchasePanel({
 
             <button
                type="button"
-               onClick={handleAdd}
-               className="flex-1 cursor-pointer border border-brown-principal text-[13px] font-helvetica-medium tracking-[0.04em] text-brown-principal transition-colors hover:bg-brown-principal hover:text-neutro-2"
+               onClick={() => addToCart({ goToCart: false })}
+               disabled={isAdding}
+               aria-busy={isAdding}
+               className="flex-1 cursor-pointer border border-brown-principal text-[13px] font-helvetica-medium tracking-[0.04em] text-brown-principal transition-colors hover:bg-brown-principal hover:text-neutro-2 disabled:cursor-wait disabled:opacity-60"
             >
-               Añadir al carrito
+               {isAdding ? 'Añadiendo…' : 'Añadir al carrito'}
             </button>
          </div>
 
          <button
             type="button"
-            onClick={handleAdd}
-            className="mt-3 w-full cursor-pointer bg-coral-principal py-[15px] text-sm font-helvetica-medium tracking-[0.04em] text-white transition-colors hover:bg-coral-4"
+            onClick={() => addToCart({ goToCart: true })}
+            disabled={isAdding}
+            className="mt-3 w-full cursor-pointer bg-coral-principal py-[15px] text-sm font-helvetica-medium tracking-[0.04em] text-white transition-colors hover:bg-coral-4 disabled:cursor-wait disabled:opacity-60"
          >
             Comprar ahora
          </button>

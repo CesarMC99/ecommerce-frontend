@@ -14,6 +14,12 @@ export const PRODUCT_CARD_FIELDS = gql`
       discountPercentage
       isNew
       rating
+      # Para el botón rápido: ¿talla única (se añade directo) o hay que elegir?
+      inStock
+      sizes {
+         size
+         inStock
+      }
       mainImage {
          publicId
          alt

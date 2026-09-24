@@ -2,6 +2,7 @@ import { catalogRoute, ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { AccountMenu } from './AccountMenu'
+import { CartButton } from './cart/CartButton'
 import { Container } from './Container'
 import { SpriteIcon, type SpriteIconName } from './SpriteIcon'
 
@@ -26,11 +27,11 @@ const SEARCH_LINK: ActionLinkProps = {
    icon: 'search-normal',
 }
 
-const SHOPPING_LINKS: ActionLinkProps[] = [
-   { label: 'Favoritos', href: ROUTES.favorites, icon: 'heart' },
-   // TODO(carrito): en el diseño abre un drawer lateral; de momento navega a /carrito
-   { label: 'Carrito', href: ROUTES.cart, icon: 'bag' },
-]
+const FAVORITES_LINK: ActionLinkProps = {
+   label: 'Favoritos',
+   href: ROUTES.favorites,
+   icon: 'heart',
+}
 
 // Icono-enlace del header. Extraído a componente porque ahora se usa en dos
 // sitios (antes y después del menú de cuenta)
@@ -93,12 +94,9 @@ export function Header() {
                {/* La cuenta depende de la sesión (cliente): es la única pieza
                    interactiva del header. El resto sigue siendo de servidor */}
                <AccountMenu />
-               {SHOPPING_LINKS.map((action) => (
-                  <ActionLink
-                     key={action.label}
-                     {...action}
-                  />
-               ))}
+               <ActionLink {...FAVORITES_LINK} />
+               {/* La bolsa abre el drawer del carrito (isla de cliente) */}
+               <CartButton />
             </div>
          </Container>
       </header>
