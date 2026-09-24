@@ -1,12 +1,11 @@
 import type {
    CatalogQueryVariables,
-   ProductCategory,
    ProductSort,
 } from '@/graphql/generated/graphql'
+import { CATEGORY_TO_API } from '@/lib/categories'
 import {
    CATALOG_CATEGORIES,
    CATALOG_SORTS,
-   type CatalogCategory,
    type CatalogFilters,
    type CatalogSort,
 } from '@/lib/routes'
@@ -51,13 +50,8 @@ export function parseCatalogFilters(raw: RawSearchParams): CatalogFilters {
    return searchParamsSchema.parse(firstValues)
 }
 
-// Traducciones URL (español, para personas) → API (enums del backend)
-const CATEGORY_TO_API: Record<CatalogCategory, ProductCategory> = {
-   mujer: 'WOMEN',
-   hombre: 'MEN',
-   accesorios: 'ACCESSORIES',
-}
-
+// Traducción URL (español, para personas) → API (enums del backend).
+// La de categorías vive en lib/categories porque también la usa el detalle
 const SORT_TO_API: Record<CatalogSort, ProductSort> = {
    destacados: 'FEATURED',
    novedades: 'NEWEST',
