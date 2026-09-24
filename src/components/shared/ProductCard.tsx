@@ -2,6 +2,7 @@ import type { ProductCardFieldsFragment } from '@/graphql/generated/graphql'
 import { formatPrice } from '@/lib/format-price'
 import { productRoute } from '@/lib/routes'
 import Link from 'next/link'
+import { AddToCartQuickButton } from './cart/AddToCartQuickButton'
 import { CloudinaryImage } from './CloudinaryImage'
 import { SpriteIcon } from './SpriteIcon'
 
@@ -80,17 +81,11 @@ export function ProductCard({
                />
             </button>
 
-            {/* TODO(carrito): conectar al estado del carrito en su página.
-                `focus-visible` hace que también aparezca al llegar con el
-                tabulador, no solo con el ratón (hover no existe en teclado).
-                Se esconde al 101% y no al 100%: con el redondeo de subpíxeles
-                asomaba una línea oscura de 1px bajo la foto */}
-            <button
-               type="button"
-               className="absolute inset-x-0 bottom-0 translate-y-[101%] cursor-pointer bg-brown-principal p-3 text-[11px] tracking-[0.08em] text-neutro-2 transition-transform duration-300 group-hover:translate-y-0 focus-visible:translate-y-0"
-            >
-               AÑADIR AL CARRITO
-            </button>
+            {/* Barra que sube al pasar el ratón: añade directo (talla única),
+                lleva a elegir talla o avisa de agotado. Se esconde al 101% y
+                no al 100%: con el redondeo de subpíxeles asomaba una línea
+                oscura de 1px bajo la foto */}
+            <AddToCartQuickButton product={product} />
          </div>
 
          <Link

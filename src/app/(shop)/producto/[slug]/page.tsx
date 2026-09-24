@@ -155,6 +155,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                </div>
 
                <ProductPurchasePanel
+                  productId={product.id}
                   sizes={product.sizes}
                   inStock={product.inStock}
                />

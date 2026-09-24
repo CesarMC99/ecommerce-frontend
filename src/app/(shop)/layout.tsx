@@ -1,3 +1,4 @@
+import { CartDrawer } from '@/components/shared/cart/CartDrawer'
 import { Footer } from '@/components/shared/Footer'
 import { Header } from '@/components/shared/Header'
 
@@ -15,6 +16,9 @@ export default function ShopLayout({
          <Header />
          <main className="animate-fade-in">{children}</main>
          <Footer />
+         {/* El drawer vive en el layout (no en cada página): se puede abrir
+             desde cualquier parte de la tienda y no se desmonta al navegar */}
+         <CartDrawer />
       </>
    )
 }
