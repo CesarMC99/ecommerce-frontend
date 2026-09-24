@@ -84,14 +84,67 @@
    --color-brown-1: #8a7a70;
    --color-brown-2: #2e2018;
    --color-brown-principal: #1a120d;
+   /* El más oscuro: fondo del footer (en el diseño: inkD) */
+   --color-brown-3: #100a06;
 
    /* BEIGE */
    --color-beige-1: #fdeae2;
    --color-beige-2: #f1e3d9;
+   /* Bordes suaves como la línea inferior del navbar (en el diseño: ring) */
+   --color-beige-3: #e2cdbf;
 
    /* NEUTRO */
    --color-neutro-1: #ffffff;
    --color-neutro-2: #fbf7f3;
+   /* Texto claro sobre fondos oscuros (en el diseño: onDark) */
+   --color-neutro-3: #fff5f0;
+
+   /* ESTADOS DE FORMULARIO (colores del diseño).
+      `destructive` es el nombre que usan los componentes de shadcn
+      (FieldError usa `text-destructive`): sin este token sus errores
+      salían sin color porque el bloque de shadcn está comentado abajo */
+   --color-destructive: #b05a4a;
+   --color-success: #5b8a4a;
+
+   /* PLACEHOLDER: las dos franjas que ocupan el lugar de las fotos
+      mientras no haya imágenes reales de producto */
+   --color-placeholder-1: #ffe0d2;
+   --color-placeholder-2: #ffcab4;
+
+   /* ANIMACIONES: al declararlas aquí, Tailwind genera las clases
+      `animate-fade-in` y `animate-fade-up` */
+   --animate-fade-in: fade-in 0.4s ease both;
+   --animate-fade-up: fade-up 0.6s ease both;
+
+   @keyframes fade-in {
+      from {
+         opacity: 0;
+      }
+      to {
+         opacity: 1;
+      }
+   }
+
+   @keyframes fade-up {
+      from {
+         opacity: 0;
+         transform: translateY(18px);
+      }
+      to {
+         opacity: 1;
+         transform: none;
+      }
+   }
+}
+
+/* Franjas diagonales que simulan una foto. Se usa en tarjetas, hero y
+   categorías: centralizarlo aquí evita repetir el gradiente en cada sitio */
+@utility bg-placeholder-stripes {
+   background-image: repeating-linear-gradient(
+      135deg,
+      var(--color-placeholder-1) 0 12px,
+      var(--color-placeholder-2) 12px 24px
+   );
 }
 
 @utility layout-auth-bg {

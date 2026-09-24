@@ -5,6 +5,19 @@ import { ErrorLink } from '@apollo/client/link/error'
 // no estamos agregando ninguna dependencia nueva
 import { from, switchMap, throwError } from 'rxjs'
 
+// Operaciones que NUNCA deben disparar un refresh al recibir UNAUTHENTICATED.
+// En ellas ese código no significa "tu token venció", sino "credenciales
+// incorrectas" (Login) o "sesión inválida" (RefreshTokens). Si se
+// refrescara, un login con contraseña errónea se reintentaría en silencio
+// en vez de mostrar "Credenciales inválidas" al usuario.
+const SKIP_REFRESH_OPERATIONS = new Set([
+   'Login',
+   'Register',
+   'LoginWithGoogle',
+   'RefreshTokens',
+   'Logout',
+])
+
 export const errorLink = new ErrorLink(({ error, operation, forward }) => {
    if (CombinedGraphQLErrors.is(error)) {
       const isUnauthenticated = error.errors.some(
@@ -12,9 +25,10 @@ export const errorLink = new ErrorLink(({ error, operation, forward }) => {
       )
 
       // Token vencido → refrescar y reintentar UNA vez.
-      // La guarda del operationName evita un bucle si algún día el
-      // refresh se llamara a través de Apollo y también fallara
-      if (isUnauthenticated && operation.operationName !== 'RefreshTokens') {
+      if (
+         isUnauthenticated &&
+         !SKIP_REFRESH_OPERATIONS.has(operation.operationName ?? '')
+      ) {
          return from(refreshAccessToken()).pipe(
             switchMap((token) =>
                token
