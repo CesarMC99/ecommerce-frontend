@@ -42,3 +42,5 @@ next-env.d.ts
 
 #codegen
 /src/graphql/generated/*
+# Exportaciones HTML de Claude Design (referencia visual, no código de la app)
+/design/

@@ -1,18 +1,32 @@
+import type { ProductCardFieldsFragment } from '@/graphql/generated/graphql'
 import { formatPrice } from '@/lib/format-price'
-import type { Product } from '@/lib/mock/products'
 import { productRoute } from '@/lib/routes'
 import Link from 'next/link'
-import { ImagePlaceholder } from './ImagePlaceholder'
+import { CloudinaryImage } from './CloudinaryImage'
 import { SpriteIcon } from './SpriteIcon'
 
 interface ProductCardProps {
-   product: Product
+   // El tipo sale del fragment ProductCardFields (Codegen): la tarjeta
+   // declara exactamente qué campos necesita y TypeScript avisa si una
+   // query se olvida de pedir alguno
+   product: ProductCardFieldsFragment
+}
+
+// Etiqueta sobre la foto. El descuento tiene prioridad sobre "Nuevo":
+// si ambas aplican, el precio rebajado es lo que más interesa al cliente.
+// Las dos reglas (¿rebajado?, ¿nuevo?) las calcula el BACKEND: aquí solo
+// se decide cómo mostrarlas
+const getProductTag = (product: ProductCardFieldsFragment) => {
+   if (product.discountPercentage) return `-${product.discountPercentage}%`
+   if (product.isNew) return 'Nuevo'
+   return null
 }
 
 // Tarjeta de producto. Vive en `shared` porque se reutiliza en la home,
 // el catálogo, favoritos y "También te puede gustar" del detalle
 export function ProductCard({ product }: ProductCardProps) {
-   const href = productRoute(product.id)
+   const href = productRoute(product.slug)
+   const tag = getProductTag(product)
 
    return (
       <article>
@@ -29,12 +43,22 @@ export function ProductCard({ product }: ProductCardProps) {
                aria-label={product.name}
                className="block"
             >
-               <ImagePlaceholder className="aspect-3/4" />
+               <CloudinaryImage
+                  image={product.mainImage}
+                  className="aspect-3/4"
+                  // Las fotos de producto tienen proporciones distintas (de 0.56
+                  // a 0.80): se recortan a 3:4 respetando la prenda
+                  autoCrop="3:4"
+                  // La tarjeta ocupa media pantalla en móvil (2 columnas) y un
+                  // cuarto en escritorio (4 columnas), hasta el ancho máximo de
+                  // 1280 px del Container: así el navegador pide la foto justa
+                  sizes="(min-width: 1280px) 300px, (min-width: 768px) 25vw, 50vw"
+               />
             </Link>
 
-            {product.tag && (
+            {tag && (
                <span className="absolute top-3 left-3 bg-coral-principal px-2 py-1 text-[10px] font-helvetica-bold tracking-[0.04em] text-white">
-                  {product.tag}
+                  {tag}
                </span>
             )}
 
@@ -72,9 +96,14 @@ export function ProductCard({ product }: ProductCardProps) {
 
          <div className="mt-1 flex items-baseline gap-2">
             <span className="text-sm">{formatPrice(product.price)}</span>
-            {product.oldPrice && (
+            {/* Se comprueba el DESCUENTO (regla del backend) y no solo que
+                exista compareAtPrice: si alguien guardara un precio anterior
+                menor que el actual, no se mostraría un tachado absurdo.
+                Y `!== null` en vez de `&&`: con `&&`, un 0 se pintaría como "0" */}
+            {product.discountPercentage !== null &&
+               product.compareAtPrice !== null && (
                <span className="text-xs text-brown-1 line-through">
-                  {formatPrice(product.oldPrice)}
+                  {formatPrice(product.compareAtPrice)}
                </span>
             )}
          </div>

@@ -1,11 +1,11 @@
 import { Container } from '@/components/shared/Container'
 import { ProductCard } from '@/components/shared/ProductCard'
-import type { Product } from '@/lib/mock/products'
+import type { ProductCardFieldsFragment } from '@/graphql/generated/graphql'
 import Link from 'next/link'
 
 interface ProductSectionProps {
    title: string
-   products: Product[]
+   products: ProductCardFieldsFragment[]
    seeAllHref: string
 }
 
@@ -17,6 +17,10 @@ export const ProductSection = ({
    products,
    seeAllHref,
 }: ProductSectionProps) => {
+   // Sin productos (backend caído o catálogo vacío) la sección no se pinta:
+   // mejor que un título "Destacados" encima de un hueco en blanco
+   if (products.length === 0) return null
+
    return (
       <section className="animate-fade-up pt-[72px] pb-[30px]">
          <Container>

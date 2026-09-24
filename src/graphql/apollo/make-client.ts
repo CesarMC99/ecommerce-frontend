@@ -1,10 +1,11 @@
 import { ApolloClient } from '@apollo/client-integration-nextjs'
-import { cache } from './cache'
+import { makeCache } from './cache'
 import { apolloLink } from './links'
 
+// Cliente del NAVEGADOR (lo usa ApolloWrapper en los Client Components)
 export function makeClient() {
    return new ApolloClient({
-      cache: cache,
+      cache: makeCache(),
       link: apolloLink,
    })
 }

@@ -14,8 +14,10 @@ export const ROUTES = {
    register: '/register',
 } as const
 
-// El detalle de producto depende de un id, por eso es una función y no un string
-export const productRoute = (id: number) => `/producto/${id}`
+// El detalle de producto depende del producto, por eso es una función.
+// Usa el SLUG ('abrigo-de-lana') y no el id de Mongo: URLs legibles y
+// mejores para buscadores (/producto/abrigo-de-lana)
+export const productRoute = (slug: string) => `/producto/${slug}`
 
 export type CatalogCategory = 'mujer' | 'hombre' | 'accesorios'
 
