@@ -9,4 +9,7 @@ const eurFormatter = new Intl.NumberFormat('es-ES', {
    maximumFractionDigits: 2,
 })
 
-export const formatPrice = (amount: number) => eurFormatter.format(amount)
+// El backend envía los precios en CÉNTIMOS enteros (18900) para evitar los
+// errores de redondeo de los decimales. La conversión a euros se hace SOLO
+// aquí, en el último momento, justo antes de mostrarlo
+export const formatPrice = (cents: number) => eurFormatter.format(cents / 100)

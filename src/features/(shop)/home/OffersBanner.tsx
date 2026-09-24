@@ -1,5 +1,7 @@
+import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { Container } from '@/components/shared/Container'
 import { catalogRoute } from '@/lib/routes'
+import { PROMO_IMAGE } from '@/lib/site-images'
 import Link from 'next/link'
 
 export const OffersBanner = () => {
@@ -21,11 +23,18 @@ export const OffersBanner = () => {
                </Link>
             </div>
 
-            {/* Franjas blancas translúcidas sobre el coral: aquí no sirve el
-                ImagePlaceholder porque sus colores son para fondo claro */}
-            <div className="hidden items-end bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.14)_0_14px,transparent_14px_28px)] p-5 font-mono text-[11px] tracking-[0.08em] text-white/70 md:flex">
-               FOTO PROMO
-            </div>
+            {/* La foto ocupa TODA la altura de la columna de texto (h-full).
+                En móvil se oculta: el banner apilado quedaría demasiado alto.
+                Como está oculta con display:none y la carga es diferida
+                (lazy), en móvil el navegador ni siquiera la descarga */}
+            <CloudinaryImage
+               image={PROMO_IMAGE}
+               className="hidden h-full rounded-none md:block"
+               // La foto original es vertical y el hueco horizontal: el
+               // recorte automático conserva a la persona en vez del centro
+               autoCrop="16:10"
+               sizes="(min-width: 1280px) 545px, 45vw"
+            />
          </section>
       </Container>
    )

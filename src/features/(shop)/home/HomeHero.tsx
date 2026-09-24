@@ -1,6 +1,7 @@
 import { Container } from '@/components/shared/Container'
-import { ImagePlaceholder } from '@/components/shared/ImagePlaceholder'
+import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { catalogRoute } from '@/lib/routes'
+import { HERO_IMAGE } from '@/lib/site-images'
 import Link from 'next/link'
 
 export const HomeHero = () => {
@@ -40,9 +41,17 @@ export const HomeHero = () => {
             </div>
          </div>
 
-         <ImagePlaceholder
-            label="FOTO EDITORIAL · 4:5"
-            className="aspect-[1/1.05] animate-fade-in rounded-none text-[11px]"
+         <CloudinaryImage
+            image={HERO_IMAGE}
+            className="aspect-[1/1.05] animate-fade-in rounded-none"
+            // Misma proporción que el hueco (1 : 1,05 = 20 : 21)
+            autoCrop="20:21"
+            // Media pantalla en escritorio (máx. 640 px), pantalla completa en móvil
+            sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
+            // Es lo PRIMERO que se ve al entrar: se descarga con prioridad.
+            // Con carga diferida aparecería tarde y empeoraría el LCP (la
+            // métrica de Google de 'cuánto tarda en verse lo principal')
+            priority
          />
       </Container>
    )
