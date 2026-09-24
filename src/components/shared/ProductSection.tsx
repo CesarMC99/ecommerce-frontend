@@ -9,9 +9,10 @@ interface ProductSectionProps {
    seeAllHref: string
 }
 
-// "Destacados" y "Novedades" son la MISMA sección con distintos datos.
-// Un componente parametrizado evita mantener dos copias que acabarían
-// divergiendo (arreglas un margen en una y te olvidas de la otra)
+// "Destacados", "Novedades" (home) y "También te puede gustar" (detalle)
+// son la MISMA sección con distintos datos. Un componente parametrizado
+// evita mantener copias que acabarían divergiendo (arreglas un margen en
+// una y te olvidas de las otras). Por eso vive en `shared`
 export const ProductSection = ({
    title,
    products,

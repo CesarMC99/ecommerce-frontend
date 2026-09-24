@@ -4,7 +4,7 @@ import { getHomeProducts } from '@/features/(shop)/home/get-home-products'
 import { HomeHero } from '@/features/(shop)/home/HomeHero'
 import { Newsletter } from '@/features/(shop)/home/Newsletter'
 import { OffersBanner } from '@/features/(shop)/home/OffersBanner'
-import { ProductSection } from '@/features/(shop)/home/ProductSection'
+import { ProductSection } from '@/components/shared/ProductSection'
 import { Testimonials } from '@/features/(shop)/home/Testimonials'
 import { catalogRoute } from '@/lib/routes'
 
