@@ -1,6 +1,6 @@
 import { Separator } from '@/components/shared/Separator'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { GoogleLoginButton } from './GoogleLoginButton'
 
 interface AuthBaseProps {
    title: string
@@ -39,16 +39,7 @@ export function AuthBase({
 
             <Separator>o</Separator>
 
-            <Button
-               variant={'google'}
-               type="button"
-               className="flex items-center justify-center gap-2"
-            >
-               <svg className="size-4 text-coral-principal">
-                  <use href="/images/icons/sprite.svg#google" />
-               </svg>
-               <span>Continuar con Google</span>
-            </Button>
+            <GoogleLoginButton />
          </div>
       </section>
    )

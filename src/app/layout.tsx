@@ -1,3 +1,5 @@
+import { ApolloWrapper } from '@/providers/ApolloProvider'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -16,7 +18,14 @@ export default function RootLayout({
          lang="en"
          className={'antialiased'}
       >
-         <body className="font-helvetica-roman bg-neutro-2">{children}</body>
+         <body className="font-helvetica-roman bg-neutro-2">
+            <GoogleOAuthProvider
+               clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+               locale="es"
+            >
+               <ApolloWrapper>{children}</ApolloWrapper>
+            </GoogleOAuthProvider>
+         </body>
       </html>
    )
 }
