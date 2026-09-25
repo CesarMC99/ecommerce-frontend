@@ -4,7 +4,7 @@ import { productRoute } from '@/lib/routes'
 import Link from 'next/link'
 import { AddToCartQuickButton } from './cart/AddToCartQuickButton'
 import { CloudinaryImage } from './CloudinaryImage'
-import { SpriteIcon } from './SpriteIcon'
+import { FavoriteButton } from './favorites/FavoriteButton'
 
 interface ProductCardProps {
    // El tipo sale del fragment ProductCardFields (Codegen): la tarjeta
@@ -69,17 +69,11 @@ export function ProductCard({
                </span>
             )}
 
-            {/* TODO(favoritos): conectar al estado de favoritos en su página */}
-            <button
-               type="button"
-               aria-label={`Añadir ${product.name} a favoritos`}
-               className="absolute top-2.5 right-2.5 flex size-8 cursor-pointer items-center justify-center rounded-full bg-neutro-1 text-coral-principal"
-            >
-               <SpriteIcon
-                  name="heart"
-                  className="size-4"
-               />
-            </button>
+            <FavoriteButton
+               productId={product.id}
+               productName={product.name}
+               className="absolute top-2.5 right-2.5"
+            />
 
             {/* Barra que sube al pasar el ratón: añade directo (talla única),
                 lleva a elegir talla o avisa de agotado. Se esconde al 101% y

@@ -16,7 +16,9 @@ export function CartButton() {
          onClick={() => setDrawerOpen(true)}
          // El número va en la etiqueta: el lector lee "Carrito, 3 productos"
          aria-label={
-            itemCount > 0 ? `Carrito, ${itemCount} productos` : 'Carrito vacío'
+            itemCount > 0
+               ? `Carrito, ${itemCount} ${itemCount === 1 ? 'producto' : 'productos'}`
+               : 'Carrito vacío'
          }
          className="relative cursor-pointer transition-opacity hover:opacity-70"
       >

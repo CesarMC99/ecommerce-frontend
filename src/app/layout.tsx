@@ -1,4 +1,4 @@
-import { CartSync } from '@/components/shared/cart/CartSync'
+import { GuestDataSync } from '@/components/shared/GuestDataSync'
 import { ApolloWrapper } from '@/providers/ApolloProvider'
 import { SessionProvider } from '@/providers/SessionProvider'
 import { GoogleOAuthProvider } from '@react-oauth/google'
@@ -28,10 +28,10 @@ export default function RootLayout({
                <ApolloWrapper>
                   {/* Dentro de Apollo: la sesión necesita el cliente GraphQL */}
                   <SessionProvider>
-                     {/* Lee el carrito de invitado y lo fusiona al iniciar
+                     {/* Lee el carrito y los favoritos de invitado y los fusiona al iniciar
                          sesión. Aquí (y no en la tienda) para que funcione
                          también cuando el login ocurre en /login */}
-                     <CartSync />
+                     <GuestDataSync />
                      {children}
                   </SessionProvider>
                </ApolloWrapper>

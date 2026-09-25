@@ -1,12 +1,13 @@
 'use client'
 
-import { ROUTES } from '@/lib/routes'
+import { getSafeRedirect, REDIRECT_PARAM, ROUTES } from '@/lib/routes'
 import { useSession } from '@/providers/SessionProvider'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-// Protege las páginas SOLO para invitados (login, registro):
-// un usuario con sesión no tiene nada que hacer aquí y se le manda a la home.
+// Protege las páginas SOLO para invitados (login, registro): un usuario con
+// sesión no tiene nada que hacer aquí. Se le devuelve a la página de la que
+// venía (?redirigir=/producto/...) o, si no hay, a la home.
 //
 // ¿Por qué en el cliente y no en el servidor (proxy.ts)? Porque el servidor
 // de Next no puede saber si hay sesión: la cookie del refresh token es
@@ -16,9 +17,16 @@ export function GuestGuard({ children }: React.PropsWithChildren) {
    const router = useRouter()
 
    useEffect(() => {
+      if (status !== 'authenticated') return
+      // window.location y no useSearchParams: este componente vive en un
+      // layout, y ese hook obligaría a envolver las páginas en <Suspense>.
+      // getSafeRedirect descarta cualquier destino fuera de la tienda
+      const redirectTo = getSafeRedirect(
+         new URLSearchParams(window.location.search).get(REDIRECT_PARAM),
+      )
       // replace y no push: el login no queda en el historial, así que el
       // botón "atrás" tampoco puede devolver al usuario aquí
-      if (status === 'authenticated') router.replace(ROUTES.home)
+      router.replace(redirectTo ?? ROUTES.home)
    }, [status, router])
 
    // Mientras se comprueba la sesión (o mientras redirige) NO se muestra el

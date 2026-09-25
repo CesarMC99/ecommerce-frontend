@@ -14,6 +14,37 @@ export const ROUTES = {
    register: '/register',
 } as const
 
+// Parámetro con la página a la que volver tras iniciar sesión
+export const REDIRECT_PARAM = 'redirigir'
+
+/**
+ * Devuelve la ruta SOLO si es interna de la tienda; si no, null.
+ *
+ * Evita el "open redirect": sin esta comprobación, alguien podría enviar
+ * /login?redirigir=https://sitio-falso.com y, tras iniciar sesión, la
+ * víctima acabaría en una web que imita a la nuestra (phishing).
+ *  - Debe empezar por "/" (ruta del propio sitio)
+ *  - No puede empezar por "//" ni "/\": el navegador los interpreta como
+ *    "otro dominio" (//sitio-falso.com)
+ */
+export const getSafeRedirect = (value: string | null | undefined) => {
+   if (!value || !value.startsWith('/')) return null
+   if (value.startsWith('//') || value.startsWith('/\\')) return null
+   return value
+}
+
+// Login y registro aceptan la página a la que volver después
+const withRedirect = (path: string, redirectTo?: string | null) => {
+   const safe = getSafeRedirect(redirectTo)
+   return safe
+      ? `${path}?${REDIRECT_PARAM}=${encodeURIComponent(safe)}`
+      : path
+}
+export const loginRoute = (redirectTo?: string | null) =>
+   withRedirect(ROUTES.login, redirectTo)
+export const registerRoute = (redirectTo?: string | null) =>
+   withRedirect(ROUTES.register, redirectTo)
+
 // El detalle de producto depende del producto, por eso es una función.
 // Usa el SLUG ('abrigo-de-lana') y no el id de Mongo: URLs legibles y
 // mejores para buscadores (/producto/abrigo-de-lana)

@@ -17,8 +17,9 @@ export function useCompleteAuth() {
    return ({ accessToken, user }: AuthPayload) => {
       // El refresh token NO se toca: el backend ya lo dejó en la cookie httpOnly.
       // Tampoco se redirige aquí: al pasar la sesión a 'authenticated', el
-      // GuestGuard de las páginas de auth saca al usuario a la home. Así la
-      // regla "logueado ⇒ fuera del login" vive en UN solo sitio
+      // GuestGuard de las páginas de auth saca al usuario (a la página de
+      // origen si venía con ?redirigir=, o a la home). Así la regla
+      // "logueado ⇒ fuera del login" vive en UN solo sitio
       signIn(accessToken, user)
    }
 }

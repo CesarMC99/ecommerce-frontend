@@ -94,7 +94,7 @@ export const useCartStore = create<CartState>()(
          // NO leer localStorage al crear el store: en el servidor no existe
          // y, si el primer render del navegador ya tuviera el carrito, no
          // coincidiría con el HTML del servidor (error de hidratación).
-         // Se lee a propósito tras el montaje, en <CartSync />
+         // Se lee a propósito tras el montaje, en <GuestDataSync />
          skipHydration: true,
          onRehydrateStorage: () => () => {
             useCartStore.setState({ hasHydrated: true })
