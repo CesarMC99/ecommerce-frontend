@@ -7,6 +7,7 @@ export type SpriteIconName =
    | 'search-normal'
    | 'profile'
    | 'heart'
+   | 'heart-outline'
    | 'star'
    | 'google'
 

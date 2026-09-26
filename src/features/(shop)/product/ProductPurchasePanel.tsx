@@ -1,7 +1,7 @@
 'use client'
 // Client Component: guarda la talla y la cantidad elegidas
 
-import { SpriteIcon } from '@/components/shared/SpriteIcon'
+import { FavoriteButton } from '@/components/shared/favorites/FavoriteButton'
 import type { ProductDetailQuery } from '@/graphql/generated/graphql'
 import { useCart } from '@/hooks/use-cart'
 import { getErrorMessage } from '@/lib/graphql-error'
@@ -16,6 +16,7 @@ type ProductSizes = NonNullable<ProductDetailQuery['product']>['sizes']
 
 interface ProductPurchasePanelProps {
    productId: string
+   productName: string
    sizes: ProductSizes
    inStock: boolean
 }
@@ -36,6 +37,7 @@ function getSizeGuideKind(sizes: ProductSizes): SizeGuideKind | null {
 
 export function ProductPurchasePanel({
    productId,
+   productName,
    sizes,
    inStock,
 }: ProductPurchasePanelProps) {
@@ -214,17 +216,12 @@ export function ProductPurchasePanel({
             </p>
          )}
 
-         {/* TODO(favoritos): conectar cuando exista el estado de favoritos */}
-         <button
-            type="button"
-            className="mt-[18px] inline-flex cursor-pointer items-center gap-2 text-[13px] text-brown-1 hover:text-brown-principal"
-         >
-            <SpriteIcon
-               name="heart"
-               className="size-4 text-coral-principal"
-            />
-            Añadir a favoritos
-         </button>
+         <FavoriteButton
+            productId={productId}
+            productName={productName}
+            variant="text"
+            className="mt-[18px]"
+         />
       </div>
    )
 }

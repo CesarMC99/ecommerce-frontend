@@ -15,6 +15,11 @@
     <path d="M7.1607 14.56C4.7407 16.18 4.7407 18.82 7.1607 20.43C9.9107 22.27 14.4207 22.27 17.1707 20.43C19.5907 18.81 19.5907 16.17 17.1707 14.56C14.4307 12.73 9.9207 12.73 7.1607 14.56Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
   
+  <!-- Mismo corazón, solo contorno: producto NO guardado en favoritos -->
+  <symbol id="heart-outline" viewBox="0 0 24 24">
+    <path d="M12 21C12 21 3 14 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6-9 13-9 13z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
   <symbol id="heart" viewBox="0 0 24 24">
     <path d="M12 21C12 21 3 14 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6-9 13-9 13z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>

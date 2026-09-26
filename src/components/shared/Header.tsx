@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { AccountMenu } from './AccountMenu'
 import { CartButton } from './cart/CartButton'
 import { Container } from './Container'
-import { SpriteIcon, type SpriteIconName } from './SpriteIcon'
+import { FavoritesLink } from './favorites/FavoritesLink'
+import { SpriteIcon } from './SpriteIcon'
 
 // Los menús se describen como DATOS y se pintan con un .map(): añadir una
 // sección nueva es añadir una línea, no copiar y pegar un <Link> entero
@@ -15,46 +16,9 @@ const NAV_LINKS = [
    { label: 'Rebajas', href: catalogRoute({ rebajas: true }), highlight: true },
 ]
 
-interface ActionLinkProps {
-   label: string
-   href: string
-   icon: SpriteIconName
-}
-
-const SEARCH_LINK: ActionLinkProps = {
-   label: 'Buscar',
-   href: ROUTES.catalog,
-   icon: 'search-normal',
-}
-
-const FAVORITES_LINK: ActionLinkProps = {
-   label: 'Favoritos',
-   href: ROUTES.favorites,
-   icon: 'heart',
-}
-
-// Icono-enlace del header. Extraído a componente porque ahora se usa en dos
-// sitios (antes y después del menú de cuenta)
-function ActionLink({ label, href, icon }: ActionLinkProps) {
-   return (
-      <Link
-         href={href}
-         aria-label={label}
-         className={cn(
-            'transition-opacity hover:opacity-70',
-            icon === 'heart' && 'text-coral-principal',
-         )}
-      >
-         <SpriteIcon
-            name={icon}
-            className="size-[19px]"
-         />
-      </Link>
-   )
-}
-
-// Server Component (sin 'use client'): no tiene estado ni eventos, así que
-// se renderiza en el servidor y no añade JavaScript al navegador
+// Server Component (sin 'use client'): el header en sí no tiene estado.
+// Las piezas que dependen del usuario (cuenta, favoritos, carrito) son
+// "islas" de cliente; el resto se renderiza en el servidor sin enviar JS
 export function Header() {
    return (
       // sticky + backdrop-blur: se queda arriba al hacer scroll y deja ver
@@ -90,12 +54,19 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-[18px] text-brown-2">
-               <ActionLink {...SEARCH_LINK} />
-               {/* La cuenta depende de la sesión (cliente): es la única pieza
-                   interactiva del header. El resto sigue siendo de servidor */}
+               {/* TODO(búsqueda): de momento lleva al catálogo completo */}
+               <Link
+                  href={ROUTES.catalog}
+                  aria-label="Buscar"
+                  className="transition-opacity hover:opacity-70"
+               >
+                  <SpriteIcon
+                     name="search-normal"
+                     className="size-[19px]"
+                  />
+               </Link>
                <AccountMenu />
-               <ActionLink {...FAVORITES_LINK} />
-               {/* La bolsa abre el drawer del carrito (isla de cliente) */}
+               <FavoritesLink />
                <CartButton />
             </div>
          </Container>
