@@ -12,6 +12,11 @@ import { SpriteIcon } from './SpriteIcon'
 
 const ICON_CLASS = 'size-[19px]'
 
+const ACCOUNT_LINKS = [
+   { href: ROUTES.orders, label: 'Mis pedidos' },
+   { href: ROUTES.favorites, label: 'Favoritos' },
+]
+
 export function AccountMenu() {
    const { status, user, signOut } = useSession()
    const router = useRouter()
@@ -88,8 +93,25 @@ export function AccountMenu() {
 
                <DropdownMenu.Separator className="my-1 h-px bg-beige-2" />
 
-               {/* TODO(perfil): añadir "Mi cuenta", "Mis pedidos" y
-                   "Favoritos" cuando existan esas páginas */}
+               {/* asChild: el Item de Radix "presta" su comportamiento
+                   (teclado, foco, cerrar al elegir) al <Link> de Next */}
+               {/* TODO(perfil): añadir "Mi cuenta" cuando exista /perfil */}
+               {ACCOUNT_LINKS.map((link) => (
+                  <DropdownMenu.Item
+                     key={link.href}
+                     asChild
+                  >
+                     <Link
+                        href={link.href}
+                        className="block rounded px-3 py-2 text-[13px] text-brown-2 outline-none data-highlighted:bg-beige-1"
+                     >
+                        {link.label}
+                     </Link>
+                  </DropdownMenu.Item>
+               ))}
+
+               <DropdownMenu.Separator className="my-1 h-px bg-beige-2" />
+
                <DropdownMenu.Item
                   disabled={isSigningOut}
                   // onSelect (no onClick): Radix lo dispara también con

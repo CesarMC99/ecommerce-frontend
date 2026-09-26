@@ -1,25 +1,20 @@
 'use client'
 
 import { AuthGuard } from '@/components/shared/AuthGuard'
-import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { Container } from '@/components/shared/Container'
 import type { OrderFieldsFragment } from '@/graphql/generated/graphql'
 import { MY_CART } from '@/graphql/modules/cart/queries/cart.queries'
 import { CONFIRM_ORDER_PAYMENT } from '@/graphql/modules/orders/mutations/checkout.mutations'
-import { formatPrice } from '@/lib/format-price'
 import { getErrorMessage } from '@/lib/graphql-error'
-import { productRoute, ROUTES } from '@/lib/routes'
+import { ROUTES } from '@/lib/routes'
 import { useMutation } from '@apollo/client/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { OrderDetails } from '../orders/OrderDetails'
 
 /** Reintentos mientras el pago sigue "en proceso" (y cada cuánto). */
 const MAX_ATTEMPTS = 5
 const RETRY_DELAY_MS = 2000
-
-// 'MX' → 'México'. Lo traduce el propio navegador: no hace falta otra
-// petición al backend solo para el nombre del país
-const COUNTRY_NAMES = new Intl.DisplayNames(['es'], { type: 'region' })
 
 interface OrderConfirmationContentProps {
    orderId: string | null
@@ -129,8 +124,6 @@ function Confirmation({ orderId }: { orderId: string }) {
 }
 
 function PaidOrder({ order }: { order: OrderFieldsFragment }) {
-   const address = order.shippingAddress
-
    return (
       <div>
          <div className="mb-10 text-center">
@@ -152,85 +145,7 @@ function PaidOrder({ order }: { order: OrderFieldsFragment }) {
             </p>
          </div>
 
-         <div className="grid gap-6 md:grid-cols-[1fr_260px]">
-            <section
-               aria-label="Productos del pedido"
-               className="rounded-md border border-beige-2 bg-neutro-1 p-6"
-            >
-               <ul className="flex flex-col gap-4">
-                  {order.lines.map((line) => (
-                     <li
-                        key={`${line.productId}-${line.size}`}
-                        className="flex gap-4"
-                     >
-                        <div className="w-16 shrink-0">
-                           <CloudinaryImage
-                              image={
-                                 line.imagePublicId
-                                    ? { publicId: line.imagePublicId, alt: line.name }
-                                    : null
-                              }
-                              className="aspect-[4/5]"
-                              autoCrop="4:5"
-                              sizes="64px"
-                           />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                           <Link
-                              href={productRoute(line.slug)}
-                              className="block truncate text-sm font-helvetica-medium text-brown-principal hover:underline"
-                           >
-                              {line.name}
-                           </Link>
-                           <p className="text-xs text-brown-1">
-                              Talla {line.size} · {line.colorName} ·{' '}
-                              {line.quantity} × {formatPrice(line.unitPrice)}
-                           </p>
-                        </div>
-                        <p className="text-sm font-helvetica-medium text-brown-principal">
-                           {formatPrice(line.lineTotal)}
-                        </p>
-                     </li>
-                  ))}
-               </ul>
-               <dl className="mt-5 flex flex-col gap-2 border-t border-beige-2 pt-4 text-sm">
-                  <div className="flex justify-between">
-                     <dt className="text-brown-1">Subtotal</dt>
-                     <dd>{formatPrice(order.subtotal)}</dd>
-                  </div>
-                  <div className="flex justify-between">
-                     <dt className="text-brown-1">Envío</dt>
-                     <dd>
-                        {order.shipping === 0 ? 'Gratis' : formatPrice(order.shipping)}
-                     </dd>
-                  </div>
-                  <div className="mt-2 flex justify-between text-base font-helvetica-bold text-brown-principal">
-                     <dt>Total pagado</dt>
-                     <dd>{formatPrice(order.total)}</dd>
-                  </div>
-               </dl>
-            </section>
-
-            <aside className="rounded-md border border-beige-2 bg-neutro-1 p-6 text-sm text-brown-2">
-               <h2 className="mb-2 text-xs tracking-[0.06em] text-brown-1">
-                  ENVÍO A
-               </h2>
-               <address className="not-italic leading-relaxed">
-                  {address.fullName}
-                  <br />
-                  {address.line1}
-                  <br />
-                  {address.city}, {COUNTRY_NAMES.of(address.country)}
-                  <br />
-                  {address.phone}
-                  <br />
-                  {order.email}
-               </address>
-               <p className="mt-4 text-xs text-brown-1">
-                  Lo recibirás en 2-4 días laborables.
-               </p>
-            </aside>
-         </div>
+         <OrderDetails order={order} />
 
          <div className="mt-10 text-center">
             <Link
