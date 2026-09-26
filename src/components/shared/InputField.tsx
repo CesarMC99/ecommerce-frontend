@@ -13,6 +13,8 @@ interface InputFieldProps<T extends FieldValues> {
    type?: string
    placeholder?: string
    disabled?: boolean
+   /** Pista de autocompletado del navegador ("name", "postal-code"...) */
+   autoComplete?: string
 }
 
 export function InputField<T extends FieldValues>({
@@ -22,6 +24,7 @@ export function InputField<T extends FieldValues>({
    type = 'text',
    placeholder,
    disabled,
+   autoComplete,
 }: InputFieldProps<T>) {
    const [viewPassword, setViewPassword] = useState<boolean>(false)
    const isPassword = type === 'password'
@@ -63,6 +66,7 @@ export function InputField<T extends FieldValues>({
                   }
                   aria-invalid={fieldState.invalid}
                   placeholder={placeholder}
+                  autoComplete={autoComplete}
                   disabled={disabled}
                   className="bg-white text-sm rounded-md border border-beige-2 py-3.5 px-4 outline-none transition-all duration-200
                   focus:shadow-[0_0_0_3px_rgba(194,94,58,0.12)] focus-visible:ring-0 "
