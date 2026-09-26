@@ -17,6 +17,9 @@ const config: CodegenConfig = {
             // Apollo Client doesn't add the `__typename` field to root types so
             // don't generate a type for the `__typename` for root operation types.
             skipTypeNameForRoot: true,
+            // Las fechas llegan por JSON como texto ISO ("2026-09-25T18:00:00Z"):
+            // sin esto Codegen las tiparía como `unknown`
+            scalars: { DateTime: 'string' },
          },
       },
    },

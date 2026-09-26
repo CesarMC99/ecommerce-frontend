@@ -158,22 +158,25 @@ export function CartPageContent() {
                         <span>{formatPrice(cart.total)}</span>
                      </div>
 
-                     {/* TODO(checkout): el pago es la siguiente gran fase.
-                         Deshabilitado para no prometer algo que aún no existe */}
-                     <button
-                        type="button"
-                        disabled
-                        aria-describedby="checkout-note"
-                        className="mt-[22px] w-full cursor-not-allowed bg-coral-principal py-4 text-sm font-helvetica-medium tracking-[0.04em] text-white opacity-60"
-                     >
-                        Finalizar compra
-                     </button>
-                     <p
-                        id="checkout-note"
-                        className="mt-2 text-center text-xs text-brown-1"
-                     >
-                        El pago estará disponible muy pronto.
-                     </p>
+                     {/* Un invitado también puede pulsarlo: el checkout lo
+                         manda al login y, al entrar, su carrito se fusiona
+                         con el de la cuenta y vuelve aquí */}
+                     {cart.itemCount > 0 ? (
+                        <Link
+                           href={ROUTES.checkout}
+                           className="mt-[22px] block w-full bg-coral-principal py-4 text-center text-sm font-helvetica-medium tracking-[0.04em] text-white transition-colors hover:bg-coral-4"
+                        >
+                           Finalizar compra
+                        </Link>
+                     ) : (
+                        <button
+                           type="button"
+                           disabled
+                           className="mt-[22px] w-full cursor-not-allowed bg-coral-principal py-4 text-sm font-helvetica-medium tracking-[0.04em] text-white opacity-60"
+                        >
+                           Finalizar compra
+                        </button>
+                     )}
                      <p className="mt-3 flex justify-center gap-2 text-[11px] tracking-[0.06em] text-brown-1">
                         <span>VISA</span>
                         <span aria-hidden>·</span>

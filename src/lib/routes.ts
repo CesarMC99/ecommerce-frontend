@@ -6,6 +6,7 @@ export const ROUTES = {
    home: '/',
    catalog: '/catalogo',
    cart: '/carrito',
+   checkout: '/checkout',
    favorites: '/favoritos',
    orders: '/pedidos',
    profile: '/perfil',
@@ -49,6 +50,12 @@ export const registerRoute = (redirectTo?: string | null) =>
 // Usa el SLUG ('abrigo-de-lana') y no el id de Mongo: URLs legibles y
 // mejores para buscadores (/producto/abrigo-de-lana)
 export const productRoute = (slug: string) => `/producto/${slug}`
+
+// Página a la que se vuelve tras pagar (también la usa Stripe como
+// return_url cuando el banco pide verificación 3-D Secure)
+export const ORDER_PARAM = 'pedido'
+export const checkoutConfirmationRoute = (orderId: string) =>
+   `${ROUTES.checkout}/confirmacion?${ORDER_PARAM}=${encodeURIComponent(orderId)}`
 
 export const CATALOG_CATEGORIES = ['mujer', 'hombre', 'accesorios'] as const
 export type CatalogCategory = (typeof CATALOG_CATEGORIES)[number]
