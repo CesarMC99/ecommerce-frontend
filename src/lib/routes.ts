@@ -51,6 +51,12 @@ export const registerRoute = (redirectTo?: string | null) =>
 // mejores para buscadores (/producto/abrigo-de-lana)
 export const productRoute = (slug: string) => `/producto/${slug}`
 
+// "Mis pedidos": la página 1 no se escribe (una sola URL por página)
+export const ordersRoute = (page = 1) =>
+   page > 1 ? `${ROUTES.orders}?pagina=${page}` : ROUTES.orders
+export const orderRoute = (orderId: string) =>
+   `${ROUTES.orders}/${encodeURIComponent(orderId)}`
+
 // Página a la que se vuelve tras pagar (también la usa Stripe como
 // return_url cuando el banco pide verificación 3-D Secure)
 export const ORDER_PARAM = 'pedido'
