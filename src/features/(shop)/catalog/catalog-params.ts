@@ -23,6 +23,8 @@ type RawSearchParams = Record<string, string | string[] | undefined>
 // error, simplemente se ignora ese filtro. La URL la escribe cualquiera:
 // una URL mal formada debe mostrar el catálogo, no una página de error
 const searchParamsSchema = z.object({
+   // Mismo límite que el backend (60): una búsqueda más larga se ignora
+   q: z.string().trim().min(1).max(60).optional().catch(undefined),
    categoria: z.enum(CATALOG_CATEGORIES).optional().catch(undefined),
    color: z.string().trim().min(1).max(50).optional().catch(undefined),
    talla: z.string().trim().min(1).max(10).optional().catch(undefined),
@@ -66,6 +68,7 @@ export function toCatalogVariables(
 ): CatalogQueryVariables {
    return {
       filter: {
+         search: filters.q,
          category: filters.categoria
             ? CATEGORY_TO_API[filters.categoria]
             : undefined,

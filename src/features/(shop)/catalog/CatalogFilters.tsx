@@ -53,7 +53,7 @@ export function CatalogFilters({ filters, facets }: CatalogFiltersProps) {
             {hasActiveFilters(filters) && (
                // Limpia los filtros pero CONSERVA el orden elegido
                <Link
-                  href={catalogRoute({ orden: filters.orden })}
+                  href={catalogRoute({ q: filters.q, orden: filters.orden })}
                   className="text-xs text-coral-principal hover:underline"
                >
                   Limpiar
