@@ -2,6 +2,7 @@ import type { RefreshTokensMutation } from '@/graphql/generated/graphql'
 import { REFRESH_TOKENS } from '@/graphql/modules/auth/fragments/refresh-tokens.fragment'
 import { print } from 'graphql'
 import { setAuthToken } from './auth-token'
+import { GRAPHQL_ENDPOINT } from './graphql-endpoint'
 
 // Single-flight: si 5 queries fallan a la vez con el token vencido,
 // se hace UN solo refresh y las 5 esperan la misma promesa.
@@ -15,7 +16,7 @@ async function requestNewAccessToken(): Promise<string | null> {
       // 1) los links se crean ANTES de que exista el cliente (circular)
       // 2) si el refresh pasara por el propio errorLink, un fallo
       //    podría disparar otro refresh en bucle
-      const res = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_API_URL!, {
+      const res = await fetch(GRAPHQL_ENDPOINT, {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          credentials: 'include', // aquí viaja la cookie httpOnly
