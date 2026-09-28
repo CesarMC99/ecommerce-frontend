@@ -3,6 +3,7 @@ import type {
    LoginMutationVariables,
 } from '@/graphql/generated/graphql'
 import { gql, type TypedDocumentNode } from '@apollo/client'
+import { SESSION_USER_FIELDS } from '../fragments/session-user.fragment'
 
 // El nombre de la operación ("Login") importa: Codegen lo usa para generar
 // LoginMutation / LoginMutationVariables, y el errorLink lo usa para NO
@@ -13,13 +14,9 @@ export const LOGIN: TypedDocumentNode<LoginMutation, LoginMutationVariables> =
          login(input: $input) {
             accessToken
             user {
-               id
-               name
-               email
-               roles
-               avatarUrl
-               createdAt
+               ...SessionUserFields
             }
          }
       }
+      ${SESSION_USER_FIELDS}
    `

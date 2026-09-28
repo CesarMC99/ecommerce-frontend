@@ -13,6 +13,7 @@ import { SpriteIcon } from './SpriteIcon'
 const ICON_CLASS = 'size-[19px]'
 
 const ACCOUNT_LINKS = [
+   { href: ROUTES.profile, label: 'Mi perfil' },
    { href: ROUTES.orders, label: 'Mis pedidos' },
    { href: ROUTES.favorites, label: 'Favoritos' },
 ]
@@ -95,7 +96,6 @@ export function AccountMenu() {
 
                {/* asChild: el Item de Radix "presta" su comportamiento
                    (teclado, foco, cerrar al elegir) al <Link> de Next */}
-               {/* TODO(perfil): añadir "Mi cuenta" cuando exista /perfil */}
                {ACCOUNT_LINKS.map((link) => (
                   <DropdownMenu.Item
                      key={link.href}
