@@ -14,6 +14,8 @@ export const ROUTES = {
    // Ya existía como '/register' en AuthHeroText: se respeta para no romperlo
    register: '/register',
    passwordRecovery: '/recuperar-contrasena',
+   // Destino del enlace del correo (?token=...). Lo construye el backend
+   passwordReset: '/restablecer-contrasena',
 } as const
 
 // Parámetro con la página a la que volver tras iniciar sesión
