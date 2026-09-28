@@ -17,13 +17,20 @@ export type SessionUser = MeQuery['me']
 type SessionState =
    | { status: 'loading'; user: null }
    | { status: 'authenticated'; user: SessionUser }
-   | { status: 'unauthenticated'; user: null }
+   // signedOut: ¿la cerró el usuario con "Cerrar sesión"? No es lo mismo
+   // que no tener sesión o que caduque: en ese caso NO hay que recordar la
+   // página donde estaba para devolverle allí al volver a entrar
+   | { status: 'unauthenticated'; user: null; signedOut: boolean }
 
 interface SessionContextValue {
    status: SessionState['status']
    user: SessionUser | null
+   /** true si la sesión la cerró el usuario (y no porque caducara) */
+   signedOut: boolean
    signIn: (accessToken: string, user: SessionUser) => void
    signOut: () => Promise<void>
+   /** Refleja cambios del perfil (p. ej. el nombre) sin volver a iniciar sesión */
+   updateUser: (user: SessionUser) => void
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
@@ -48,7 +55,7 @@ export function SessionProvider({ children }: React.PropsWithChildren) {
          // ejecute dos veces seguidas, al backend le llega UN solo refresh
          const token = getAuthToken() ?? (await refreshAccessToken())
          if (!token) {
-            if (!cancelled) setSession({ status: 'unauthenticated', user: null })
+            if (!cancelled) setSession({ status: 'unauthenticated', user: null, signedOut: false })
             return
          }
 
@@ -61,11 +68,11 @@ export function SessionProvider({ children }: React.PropsWithChildren) {
             setSession(
                data
                   ? { status: 'authenticated', user: data.me }
-                  : { status: 'unauthenticated', user: null },
+                  : { status: 'unauthenticated', user: null, signedOut: false },
             )
          } catch {
             setAuthToken(null)
-            if (!cancelled) setSession({ status: 'unauthenticated', user: null })
+            if (!cancelled) setSession({ status: 'unauthenticated', user: null, signedOut: false })
          }
       }
 
@@ -81,6 +88,15 @@ export function SessionProvider({ children }: React.PropsWithChildren) {
       setSession({ status: 'authenticated', user })
    }
 
+   const updateUser = (user: SessionUser) => {
+      // Solo tiene sentido con sesión: si se cerró mientras tanto, se ignora
+      setSession((current) =>
+         current.status === 'authenticated'
+            ? { status: 'authenticated', user }
+            : current,
+      )
+   }
+
    const signOut = async () => {
       try {
          // El backend revoca el refresh token y borra la cookie
@@ -92,13 +108,20 @@ export function SessionProvider({ children }: React.PropsWithChildren) {
          // Borra de la caché de Apollo todo lo que pertenecía al usuario
          // (si otra persona entra después en este navegador, no lo verá)
          await client.clearStore()
-         setSession({ status: 'unauthenticated', user: null })
+         setSession({ status: 'unauthenticated', user: null, signedOut: true })
       }
    }
 
    return (
       <SessionContext.Provider
-         value={{ status: session.status, user: session.user, signIn, signOut }}
+         value={{
+            status: session.status,
+            user: session.user,
+            signedOut: session.status === 'unauthenticated' && session.signedOut,
+            signIn,
+            signOut,
+            updateUser,
+         }}
       >
          {children}
       </SessionContext.Provider>

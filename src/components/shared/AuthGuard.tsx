@@ -12,14 +12,18 @@ import { useEffect } from 'react'
 // backend). La seguridad REAL está en el backend (JwtAuthGuard): esto
 // solo evita mostrar una página que no funcionaría
 export function AuthGuard({ children }: React.PropsWithChildren) {
-   const { status } = useSession()
+   const { status, signedOut } = useSession()
    const router = useRouter()
 
    useEffect(() => {
       if (status !== 'unauthenticated') return
+      // Cerró sesión él mismo: el menú de la cuenta ya le lleva al login, y
+      // al volver a entrar debe ir a la página principal, no aquí. Solo se
+      // recuerda la página si llegó SIN sesión (o si caducó)
+      if (signedOut) return
       const { pathname, search } = window.location
       router.replace(loginRoute(pathname + search))
-   }, [status, router])
+   }, [status, signedOut, router])
 
    if (status !== 'authenticated') {
       return (

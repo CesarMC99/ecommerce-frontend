@@ -13,6 +13,7 @@ export const ROUTES = {
    login: '/login',
    // Ya existía como '/register' en AuthHeroText: se respeta para no romperlo
    register: '/register',
+   passwordRecovery: '/recuperar-contrasena',
 } as const
 
 // Parámetro con la página a la que volver tras iniciar sesión

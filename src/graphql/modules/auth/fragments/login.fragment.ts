@@ -20,6 +20,7 @@ import type {
    LoginWithGoogleMutationVariables,
 } from '@/graphql/generated/graphql'
 import { gql, type TypedDocumentNode } from '@apollo/client'
+import { SESSION_USER_FIELDS } from './session-user.fragment'
 
 // TypedDocumentNode<Respuesta, Variables> "adjunta" los tipos de Codegen
 // al documento. Así useMutation(LOGIN_WITH_GOOGLE) infiere todo solo,
@@ -32,13 +33,9 @@ export const LOGIN_WITH_GOOGLE: TypedDocumentNode<
       loginWithGoogle(input: $input) {
          accessToken
          user {
-            id
-            name
-            email
-            roles
-            avatarUrl
-            createdAt
+            ...SessionUserFields
          }
       }
    }
+   ${SESSION_USER_FIELDS}
 `
