@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# La plantilla de variables SÍ se sube (sin valores reales)
+!.env.example
 
 # vercel
 .vercel
@@ -40,7 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#codegen
-/src/graphql/generated/*
+# codegen: src/graphql/generated SÍ se sube (Vercel compila sin backend)
 # Exportaciones HTML de Claude Design (referencia visual, no código de la app)
 /design/

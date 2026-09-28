@@ -1,3 +1,4 @@
+import { GRAPHQL_ENDPOINT } from '@/lib/graphql-endpoint'
 import { HttpLink } from '@apollo/client'
 
 // Último eslabón de la cadena: el que de verdad hace la petición HTTP.
@@ -5,7 +6,8 @@ import { HttpLink } from '@apollo/client'
 // las imágenes se subirán directamente a Cloudinary con una firma del
 // backend, sin pasar por GraphQL)
 export const httpLink = new HttpLink({
-   uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
+   // Navegador → mismo dominio (proxy); servidor → backend directo
+   uri: GRAPHQL_ENDPOINT,
    // Envía y acepta la cookie httpOnly del refresh token (otro puerto =
    // otro origen: sin esto el navegador no la mandaría)
    credentials: 'include',

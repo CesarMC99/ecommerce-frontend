@@ -8,6 +8,12 @@ import { ProductSection } from '@/components/shared/ProductSection'
 import { Testimonials } from '@/features/(shop)/home/Testimonials'
 import { catalogRoute } from '@/lib/routes'
 
+// ISR: la home se genera como página estática (rapidísima) y se regenera
+// en segundo plano como mucho cada 60 s. Sin esto se generaría UNA vez al
+// desplegar: si ese momento el backend estaba dormido (plan gratis de
+// Render), la home se quedaría sin productos hasta el siguiente despliegue
+export const revalidate = 60
+
 // La página solo COMPONE secciones y decide qué datos recibe cada una.
 // El detalle visual vive en src/features/(shop)/home/, así esta página se
 // lee de un vistazo como el índice de la home.

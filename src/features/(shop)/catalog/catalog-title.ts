@@ -3,8 +3,9 @@ import type { CatalogFilters } from '@/lib/routes'
 
 // Título según lo que se está viendo: si llegas desde "Mujer" en el menú,
 // la página debe decir "Mujer", no un genérico "Catálogo".
-// Prioridad: categoría > rebajas > novedades > catálogo
+// Prioridad: búsqueda > categoría > rebajas > novedades > catálogo
 export function getCatalogTitle(filters: CatalogFilters): string {
+   if (filters.q) return `Resultados para «${filters.q}»`
    if (filters.categoria) return CATEGORY_LABELS[filters.categoria]
    if (filters.rebajas) return 'Rebajas'
    if (filters.orden === 'novedades') return 'Novedades'

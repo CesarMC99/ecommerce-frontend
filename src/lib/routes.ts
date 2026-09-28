@@ -14,6 +14,8 @@ export const ROUTES = {
    // Ya existía como '/register' en AuthHeroText: se respeta para no romperlo
    register: '/register',
    passwordRecovery: '/recuperar-contrasena',
+   // Destino del enlace del correo (?token=...). Lo construye el backend
+   passwordReset: '/restablecer-contrasena',
 } as const
 
 // Parámetro con la página a la que volver tras iniciar sesión
@@ -79,6 +81,8 @@ export type CatalogSort = (typeof CATALOG_SORTS)[number]
 // Filtros del catálogo TAL COMO VIAJAN EN LA URL: en español y en euros,
 // porque la URL la ve (y comparte) el usuario: /catalogo?categoria=mujer&precio=100
 export interface CatalogFilters {
+   /** Texto del buscador ("abrigo camel") */
+   q?: string
    categoria?: CatalogCategory
    color?: string
    talla?: string
@@ -97,6 +101,7 @@ export interface CatalogFilters {
 // pagina=1): así cada filtrado tiene UNA sola URL posible, más limpia
 export const catalogRoute = (filters: CatalogFilters = {}) => {
    const params = new URLSearchParams()
+   if (filters.q) params.set('q', filters.q)
    if (filters.categoria) params.set('categoria', filters.categoria)
    if (filters.color) params.set('color', filters.color)
    if (filters.talla) params.set('talla', filters.talla)

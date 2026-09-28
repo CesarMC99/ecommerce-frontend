@@ -1,20 +1,13 @@
-import { catalogRoute, ROUTES } from '@/lib/routes'
+import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { AccountMenu } from './AccountMenu'
 import { CartButton } from './cart/CartButton'
 import { Container } from './Container'
 import { FavoritesLink } from './favorites/FavoritesLink'
-import { SpriteIcon } from './SpriteIcon'
-
-// Los menús se describen como DATOS y se pintan con un .map(): añadir una
-// sección nueva es añadir una línea, no copiar y pegar un <Link> entero
-const NAV_LINKS = [
-   { label: 'Mujer', href: catalogRoute({ categoria: 'mujer' }) },
-   { label: 'Hombre', href: catalogRoute({ categoria: 'hombre' }) },
-   { label: 'Novedades', href: catalogRoute({ orden: 'novedades' }) },
-   { label: 'Rebajas', href: catalogRoute({ rebajas: true }), highlight: true },
-]
+import { MobileMenu } from './MobileMenu'
+import { NAV_LINKS } from './nav-links'
+import { SearchDialog } from './SearchDialog'
 
 // Server Component (sin 'use client'): el header en sí no tiene estado.
 // Las piezas que dependen del usuario (cuenta, favoritos, carrito) son
@@ -25,14 +18,18 @@ export function Header() {
       // el contenido difuminado por debajo, como en el diseño
       <header className="sticky top-0 z-40 border-b border-beige-3/50 bg-neutro-2/80 backdrop-blur-lg">
          <Container className="flex items-center justify-between py-[18px]">
-            <Link
-               href={ROUTES.home}
-               className="font-bricolage-extrabold text-2xl tracking-[0.18em] text-brown-principal"
-            >
-               ÁMBAR
-            </Link>
+            <div className="flex items-center gap-2">
+               {/* Solo en móvil (md:hidden dentro del componente) */}
+               <MobileMenu />
+               <Link
+                  href={ROUTES.home}
+                  className="font-bricolage-extrabold text-xl tracking-[0.18em] text-brown-principal md:text-2xl"
+               >
+                  ÁMBAR
+               </Link>
+            </div>
 
-            {/* En móvil se oculta: el menú hamburguesa queda pendiente */}
+            {/* En móvil las secciones están en el menú ☰ (MobileMenu) */}
             <nav
                aria-label="Principal"
                className="hidden gap-[30px] text-[13px] tracking-[0.04em] text-brown-2 md:flex"
@@ -54,19 +51,14 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-[18px] text-brown-2">
-               {/* TODO(búsqueda): de momento lleva al catálogo completo */}
-               <Link
-                  href={ROUTES.catalog}
-                  aria-label="Buscar"
-                  className="transition-opacity hover:opacity-70"
-               >
-                  <SpriteIcon
-                     name="search-normal"
-                     className="size-[19px]"
-                  />
-               </Link>
-               <AccountMenu />
-               <FavoritesLink />
+               {/* La lupa abre el buscador con sugerencias */}
+               <SearchDialog />
+               {/* En móvil la cuenta y los favoritos van dentro del menú ☰:
+                   así el header no se amontona en pantallas pequeñas */}
+               <div className="hidden items-center gap-[18px] md:flex">
+                  <AccountMenu />
+                  <FavoritesLink />
+               </div>
                <CartButton />
             </div>
          </Container>

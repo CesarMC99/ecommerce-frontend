@@ -5,6 +5,7 @@ import { InputField } from '@/components/shared/InputField'
 import { FieldGroup } from '@/components/ui/field'
 import { LOGIN } from '@/graphql/modules/auth/mutations/login.mutation'
 import { getErrorMessage } from '@/lib/graphql-error'
+import { ROUTES } from '@/lib/routes'
 import { useMutation } from '@apollo/client/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
@@ -83,10 +84,9 @@ export const LoginForm = () => {
                   disabled={isSubmitting}
                />
 
-               {/* TODO(backend): no existe aún el flujo de recuperar contraseña */}
                <Link
-                  href={'#'}
-                  className="text-coral-principal text-[13px]"
+                  href={ROUTES.passwordRecovery}
+                  className="text-coral-principal text-[13px] hover:underline"
                >
                   ¿Olvidaste tu contraseña?
                </Link>
